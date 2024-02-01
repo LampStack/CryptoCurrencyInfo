@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coin Currency Info</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 min-h-screen flex items-center justify-center" onload="onPageLoad()">
+  <div class="max-w-md p-8 bg-gradient-to-b from-pink-100 via-white to-gray-100 rounded-lg shadow-md">
+    <h1 class="text-4xl font-extrabold text-purple-800 mb-8">Coin Currency Info</h1>
+    <form>
+      <label for="coinSelect" class="block text-lg font-semibold text-gray-800 mb-4">Select Coin:</label>
+      <select id="coinSelect" class="w-full p-4 border border-purple-300 rounded-md focus:outline-none focus:border-purple-500 bg-gray-200 text-gray-800" onchange="fetchCoinData()">
+        <option value="BTCUSDT">BitCoin (BTC)</option>
+        <option value="ETHUSDT">Ethereum (ETH)</option>
+        <option value="BNBUSDT">Binance Coin (BNB)</option>
+        <option value="SOLUSDT">Solana (SOL)</option>
+        <option value="XRPUSDT">Ripple (XRP)</option>
+        <option value="ADAUSDT">Cardano (ADA)</option>
+        <option value="AVAXUSDT">Avalanche (AVAX)</option>
+        <option value="DOGEUSDT">DogeCoin (DOGE)</option>
+        <option value="TRXUSDT">Tron (TRX)</option>
+        <option value="FTMUSDT">Fantom (FTM)</option>
+        <option value="LTCUSDT">LiteCoin (LTC)</option>
+        <option value="SHIBUSDT">SHIBA (SHIB)</option>
+        <option value="MATICUSDT">MATIC</option>
+        <option value="KAVAUSDT">KAVA</option>
+        <option value="LUNAUSDT">LUNA</option>
+        <option value="KAVAUSDT">KAVA</option>
+        <!-- Add more options -->
+      </select>
+    </form>
+    <div id="coinInfoCard" class="mt-10 hidden">
+      <!-- Coin info will be displayed here -->
+    </div>
+  </div>
+  <script>
+    async function fetchCoinData() {
+      const coinSymbol = document.getElementById('coinSelect').value;
+      const apiUrl = `https://api.binance.com/api/v3/ticker/24hr?symbol=${coinSymbol}`;
+
+      try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        displayCoinInfo(data);
+      } catch (error) {
+        console.error('Error fetching coin data:', error);
+      }
+    }
+    function displayCoinInfo(coinData) {
+      const coinInfoCard = document.getElementById('coinInfoCard');
+      coinInfoCard.innerHTML = `
+            <div class="bg-gray-200 p-4 rounded-md">
+                <p class="flex items-center justify-center text-xl font-semibold">$${parseFloat(coinData.lastPrice)}</p></br>
+                <p>highPrice (24h): $${parseFloat(coinData.highPrice)}</p>
+                <p>lowPrice (24h): $${parseFloat(coinData.lowPrice)}</p>
+                <p>priceChange (24h): $${parseFloat(coinData.priceChange)} (${coinData.priceChangePercent}%)</p>
+                <p>volume: ${parseFloat(coinData.volume)}</p>
+            </div>
+        `;
+      coinInfoCard.classList.remove('hidden');
+    }
+    function onPageLoad() {
+      fetchCoinData();
+    }
+  </script>
+</body>
+</html>
